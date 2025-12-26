@@ -64,7 +64,7 @@ export default function Home() {
             </section>
 
           {/* Second Section - Statistics */}
-          <section ref={statisticsRef} className="snap-section relative w-full min-h-screen bg-gray-900 flex flex-col items-start pt-5 pl-5 pb-20">
+          <section ref={statisticsRef} className="snap-section relative w-full min-h-screen bg-gray-900 flex flex-col items-start pt-5 pl-5">
             <LeafRevealText text="Statistics" />
             <div className="mt-4 w-full px-20 mr-10 flex justify-end">
               <div className="scale-120 origin-center">
@@ -83,7 +83,7 @@ export default function Home() {
                 />
               </div>
             </div>
-            <div className="mt-8 w-full px-20">
+            <div className="mt-8 w-full px-10 flex justify-end mb-8">
               <LeetCodeStats />
             </div>
           </section>

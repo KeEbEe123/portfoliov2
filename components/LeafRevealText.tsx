@@ -93,7 +93,7 @@ export default function LeafRevealText({ text }: LeafRevealTextProps) {
 
     // Create multiple petals
     const leaves: HTMLDivElement[] = [];
-    const leafCount = 80;
+    const leafCount = 20;
 
     for (let i = 0; i < leafCount; i++) {
       const leaf = document.createElement("div");
@@ -145,28 +145,28 @@ export default function LeafRevealText({ text }: LeafRevealTextProps) {
       masterTimeline
         .to(leaf, {
           opacity: 1,
-          duration: 0.3,
+          duration: 0.2,
           ease: "power2.in",
-        }, i * 0.03)
+        }, i * 0.02)
         .to(
           leaf,
           {
             x: `+=${xDistance}`,
             y: `+=${yDistance}`,
             rotation: `+=${rotationAmount}`,
-            duration: 2,
+            duration: 1,
             ease: "power2.out",
           },
-          i * 0.03 + 0.1
+          i * 0.02 + 0.05
         )
         .to(
           leaf,
           {
             opacity: 0,
-            duration: 0.5,
+            duration: 0.3,
             ease: "power2.out",
           },
-          i * 0.03 + 1.5
+          i * 0.02 + 0.8
         );
     });
 
@@ -180,11 +180,11 @@ export default function LeafRevealText({ text }: LeafRevealTextProps) {
       {
         opacity: 1,
         x: 0,
-        duration: 0.5,
-        stagger: 0.05,
+        duration: 0.4,
+        stagger: 0.03,
         ease: "power2.out",
       },
-      0.5
+      0.3
     );
 
     return () => {

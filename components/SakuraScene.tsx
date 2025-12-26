@@ -65,8 +65,8 @@ export default function SakuraScene({ onLoaded }: SakuraSceneProps) {
       {/* Sakura tree + petals container */}
       <div className="relative flex items-end justify-center min-h-screen pb-0 z-10">
         <div className="relative">
-          {/* Sakura petals floating over tree */}
-          <div className="absolute inset-0 translate-y-[80%] z-20 pointer-events-none">
+          {/* Sakura petals floating behind tree */}
+          <div className="absolute inset-0 translate-y-[80%] z-0 pointer-events-none">
             <SakuraPetals />
           </div>
 
@@ -78,7 +78,7 @@ export default function SakuraScene({ onLoaded }: SakuraSceneProps) {
             loop
             muted
             playsInline
-            className="object-contain w-[85vw] h-auto translate-y-[2vh]"
+            className="relative z-10 object-contain w-[85vw] h-auto translate-y-[2vh]"
           />
         </div>
       </div>

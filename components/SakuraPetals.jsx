@@ -12,72 +12,7 @@ export default function SakuraPetals() {
       container.style.position = "relative";
     }
 
-    const asciiPetal = `                                                                                                               
-                                                                                                    
-                                                                                                    
-                                                                                                    
-                                                                                                    
-                                                                                                    
-                                                                                                    
-                                                                                                    
-                                                                                                    
-                                                                                                    
-                                                                                                    
-                                                                                                    
-                                                                                                    
-                                                                                                    
-                                                                                                    
-                                                                                                    
-                                                                                                    
-                                                                                                    
-                                                                                                    
-                                                                                                    
-               ###%%%                                                                               
-              *===-------------==*#                                                                 
-              +=----------------::::-=+*                                                            
-              +---------------:::::::-----=+                                                        
-              +=---------------:::::::::::---=++                                                    
-              +==---------------::::::::::::::-===+                                                 
-              +==----------------:::::::::::::::::-**                                               
-              +==-:::::------------:::::::::::::::::::-#                                            
-              +==-:::::::-----------::::::::::::::::::::--=+                                        
-              +==-::::::::::----------:::::::::::::::::::::::--=                                    
-              +=--:::::::::::::---------:::::::::::::::::::::::--=                                  
-              +---:::::::::::::::---------:::::::::::::::::::::::-++                                
-              +---::::::::::::::::::--------::::::::::::::::::::::--#                               
-              +---:::::::::::::::::::::-------:::::::::::::::::::::-==+                             
-              +==-:::::::::::::::::::::::-------:::::::::::::::::::::-=*                            
-               +=-:::::::::::::::::::::::::-------::::::::::::::::::::--=                           
-                +::::::::::::::::::::::::::::------:::::::::::::::::::::--=                         
-                +--:::::::::::::::::::::::::::------:::::::::::::::::::::-=#                        
-                 **-::::::::::::::::::::::::::::----::::::::::::::::::::::-++                       
-                   =--::::::::::::::::::::::::::::::::::::::::::::::::::::::-                       
-                   ++--:::::::::::::::::::::::::::::::::::::::::::::::::::::-**                     
-                     ==--::::::::::::::::::::::::::::::::::::::::::::::::::::--                     
-                       =----::::::::::::::::::::::::::::::::::::::::::::::::::-%                    
-                         +=---::::::::::::::::::::::::::::::::::::::::::::::::-++                   
-                           *+=--:::::::::::::::::::::::::::::::::::::::::::::::-=*                  
-                              **=--:::::::::::::::::::::::::::::::::::::::::::::-+                  
-                                *+==--------::::::::::::::::::::::::::::::::::::-+*                 
-                                  +====------------:::::::::::::::::::::::::::::-==*                
-                                     ++====----------------::::::::::::::::::::::-=+                
-                                         ++=--------------------::::::::::::::::::-+*               
-                                             ++=-------------------:::::::::::::::-==+              
-                                                 *+=-----------------:::::::::::::::-=+             
-                                                     %++=--------------::::::::::::::-==            
-                                                       *++++=--------------::::::::::::=**          
-                                                           *+====------------:::::::::::--          
-                                                                *===--=---------:::::::::-**        
-                                                                     *+==---------:::::::--=#       
-                                                                           *++=---------::--++      
-                                                                                  ##+===---===      
-                                                                                      ******#       
-                                                                                                    
-                                                                                                    
-                                                                                                    
-                                                                                                    
-                                                                                                    
-                                                                                                    `;
+
 
     let mouseX = -1000;
     let mouseY = -1000;
@@ -93,24 +28,21 @@ export default function SakuraPetals() {
     class Petal {
       constructor() {
         this.reset(true);
-        this.element = document.createElement("div");
+        this.element = document.createElement("img");
         this.element.className = "petal";
-        this.element.textContent = asciiPetal;
+        this.element.src = "/assets/petal.svg";
+        this.element.alt = "";
         
         // Optimize styles - set once
         Object.assign(this.element.style, {
           position: "absolute",
-          transformOrigin: "top left",
+          transformOrigin: "center",
           pointerEvents: "none",
-          whiteSpace: "pre",
-          color: "#fe68bdff",
-          textShadow: "0 0 2px rgba(0,0,0,0.25)",
           willChange: "transform",
-          fontSize: "1px",
-          lineHeight: "0.8",
-          fontFamily: "monospace",
           backfaceVisibility: "hidden",
           perspective: "1000px",
+          width: "30px",
+          height: "30px",
         });
         
         // Cache transform string parts to reduce string concatenation
@@ -122,10 +54,11 @@ export default function SakuraPetals() {
 
       reset(initial = false) {
         const { width, height } = getBounds();
+        const startY = height * 0.3; // Start at 30% from top
         this.x = Math.random() * Math.max(100, width);
         this.y = initial
-          ? Math.random() * Math.max(100, height) - 150
-          : -100 - Math.random() * 300;
+          ? startY + Math.random() * (height - startY)
+          : startY - 100 - Math.random() * 300;
         this.size = Math.random() * 0.35 + 0.25;
         this.speedY = Math.random() * 0.9 + 0.6;
         this.speedX = Math.random() * 0.3 - 0.15;
