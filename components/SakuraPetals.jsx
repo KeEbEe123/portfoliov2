@@ -1,8 +1,15 @@
 "use client";
 import { useEffect, useRef } from "react";
+import * as THREE from 'three';
 
-export default function SakuraPetals() {
+export default function SakuraPetals({ branchAnimations = {}, camera }) {
   const containerRef = useRef(null);
+  const branchAnimationsRef = useRef(branchAnimations);
+  
+  // Update the ref when branchAnimations changes
+  useEffect(() => {
+    branchAnimationsRef.current = branchAnimations;
+  }, [branchAnimations]);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -12,7 +19,8 @@ export default function SakuraPetals() {
       container.style.position = "relative";
     }
 
-
+    // Debug log to see if branch animations are being received
+    console.log('SakuraPetals received branchAnimations:', Object.keys(branchAnimations || {}).length);
 
     let mouseX = -1000;
     let mouseY = -1000;
@@ -26,8 +34,8 @@ export default function SakuraPetals() {
     });
 
     class Petal {
-      constructor() {
-        this.reset(true);
+      constructor(spawnX = null, spawnY = null) {
+        this.reset(true, spawnX, spawnY);
         this.element = document.createElement("img");
         this.element.className = "petal";
         this.element.src = "/assets/petal.svg";
@@ -41,36 +49,49 @@ export default function SakuraPetals() {
           willChange: "transform",
           backfaceVisibility: "hidden",
           perspective: "1000px",
-          width: "30px",
-          height: "30px",
+          width: "25px",
+          height: "25px",
         });
         
         // Cache transform string parts to reduce string concatenation
         this.lastTransform = "";
         this.lastOpacity = 1;
+        this.lifespan = 0;
+        this.maxLifespan = 8000 + Math.random() * 4000; // 8-12 seconds
         
         container.appendChild(this.element);
       }
 
-      reset(initial = false) {
+      reset(initial = false, spawnX = null, spawnY = null) {
         const { width, height } = getBounds();
-        const startY = height * 0.3; // Start at 30% from top
-        this.x = Math.random() * Math.max(100, width);
-        this.y = initial
-          ? startY + Math.random() * (height - startY)
-          : startY - 100 - Math.random() * 300;
-        this.size = Math.random() * 0.35 + 0.25;
-        this.speedY = Math.random() * 0.9 + 0.6;
-        this.speedX = Math.random() * 0.3 - 0.15;
+        
+        if (spawnX !== null && spawnY !== null) {
+          // Spawn from specific branch position
+          this.x = spawnX + (Math.random() - 0.5) * 100; // Small random offset
+          this.y = spawnY + (Math.random() - 0.5) * 50;
+        } else {
+          // Default spawn behavior (reduced for less static petals)
+          const startY = height * 0.2;
+          this.x = Math.random() * Math.max(100, width);
+          this.y = initial
+            ? startY + Math.random() * (height - startY)
+            : startY - 100 - Math.random() * 200;
+        }
+        
+        this.size = Math.random() * 0.3 + 0.2;
+        this.speedY = Math.random() * 0.8 + 0.4;
+        this.speedX = Math.random() * 0.4 - 0.2;
         this.rotation = Math.random() * 360;
-        this.rotationSpeed = (Math.random() - 0.5) * 1.5;
+        this.rotationSpeed = (Math.random() - 0.5) * 2;
         this.swing = Math.random() * Math.PI * 2;
-        this.swingSpeed = Math.random() * 0.02 + 0.015;
-        this.opacity = Math.random() * 0.5 + 0.5;
+        this.swingSpeed = Math.random() * 0.025 + 0.02;
+        this.opacity = Math.random() * 0.4 + 0.6;
+        this.lifespan = 0;
       }
 
       update(delta, bounds) {
         const { width, height } = bounds;
+        this.lifespan += delta * 16.67; // Convert to milliseconds
 
         // Calculate mouse influence only if mouse is in reasonable range
         const dx = this.x - mouseX;
@@ -85,19 +106,29 @@ export default function SakuraPetals() {
           const distance = Math.sqrt(distSq);
           const force = (mouseRadius - distance) / mouseRadius;
           const angle = Math.atan2(dy, dx);
-          displaceX = Math.cos(angle) * force * 25;
-          displaceY = Math.sin(angle) * force * 25;
+          displaceX = Math.cos(angle) * force * 20;
+          displaceY = Math.sin(angle) * force * 20;
         }
 
         this.y += this.speedY * delta;
         this.swing += this.swingSpeed * delta;
-        this.x += (Math.sin(this.swing) * 1.2 + this.speedX + displaceX * 0.4) * delta;
-        this.y += displaceY * 0.25 * delta;
-        this.rotation += (this.rotationSpeed + Math.abs(displaceX) * 1.2) * delta;
+        this.x += (Math.sin(this.swing) * 1.5 + this.speedX + displaceX * 0.3) * delta;
+        this.y += displaceY * 0.2 * delta;
+        this.rotation += (this.rotationSpeed + Math.abs(displaceX) * 1) * delta;
 
-        if (this.y > height + 200) this.reset();
-        if (this.x > width + 200) this.x = -200;
-        else if (this.x < -200) this.x = width + 200;
+        // Fade out over time
+        const fadeProgress = this.lifespan / this.maxLifespan;
+        if (fadeProgress > 0.7) {
+          this.opacity = Math.max(0, 1 - (fadeProgress - 0.7) / 0.3);
+        }
+
+        // Remove if too old or off screen
+        if (this.lifespan > this.maxLifespan || this.y > height + 300) {
+          return false; // Signal for removal
+        }
+        
+        if (this.x > width + 300) this.x = -300;
+        else if (this.x < -300) this.x = width + 300;
 
         // Round values to reduce sub-pixel rendering
         const x = Math.round(this.x * 10) / 10;
@@ -116,6 +147,8 @@ export default function SakuraPetals() {
           this.element.style.opacity = this.opacity;
           this.lastOpacity = this.opacity;
         }
+
+        return true; // Continue existing
       }
 
       remove() {
@@ -124,28 +157,97 @@ export default function SakuraPetals() {
     }
 
     const petals = [];
-    const count = 180;
-    for (let i = 0; i < count; i++) {
+    
+    // Reduced initial count since we'll spawn dynamically
+    const initialCount = 60;
+    for (let i = 0; i < initialCount; i++) {
       const petal = new Petal();
-      petal.y = Math.random() < 0.8 ? Math.random() * getBounds().height : -Math.random() * 200;
+      petal.y = Math.random() < 0.6 ? Math.random() * getBounds().height : -Math.random() * 200;
       petals.push(petal);
     }
 
     let lastTime = performance.now();
     let rafId;
-    let frameCount = 0;
+    let lastBranchCheck = 0;
+
+    // Function to convert 3D world position to screen coordinates
+    const worldToScreen = (worldPos, camera, bounds) => {
+      if (!camera) return null;
+      
+      try {
+        const screenPos = worldPos.clone().project(camera);
+        const x = (screenPos.x * 0.5 + 0.5) * bounds.width;
+        const y = (-screenPos.y * 0.5 + 0.5) * bounds.height;
+        return { x, y };
+      } catch (e) {
+        return null;
+      }
+    };
 
     const animate = (time) => {
       const delta = Math.min((time - lastTime) / 16.67, 2);
       lastTime = time;
-      frameCount++;
       
       // Cache bounds once per frame instead of per petal
       const bounds = getBounds();
       
-      // Update petals in batches to reduce layout thrashing
-      for (let i = 0; i < petals.length; i++) {
-        petals[i].update(delta, bounds);
+      // Check for branch animations and spawn petals (throttled)
+      if (time - lastBranchCheck > 100) { // Check more frequently - reduced from 150ms to 100ms
+        lastBranchCheck = time;
+        
+        if (branchAnimationsRef.current && Object.keys(branchAnimationsRef.current).length > 0) {
+          let shouldSpawnPetal = false;
+          let animationStrength = 0;
+          
+          Object.entries(branchAnimationsRef.current).forEach(([branchName, branchAnim]) => {
+            // Spawn petals during initial movement and early swaying
+            if (branchAnim && branchAnim.isAnimating && branchAnim.swayAmplitude > 0.02) { // Lowered from 0.03 to 0.02
+              shouldSpawnPetal = true;
+              animationStrength = Math.max(animationStrength, branchAnim.swayAmplitude)+5;
+            }
+          });
+          
+          if (shouldSpawnPetal) {
+            // Spawn multiple petals based on animation strength
+            const spawnCount = Math.min(Math.floor(animationStrength * 8) + 50, 4); // 1-4 petals per check
+            const spawnChance = Math.min(animationStrength * 3 + 0.3, 0.9); // 30%-90% chance based on strength
+            
+            if (Math.random() < spawnChance) {
+              console.log(`Spawning ${spawnCount} petals due to branch movement (strength: ${animationStrength.toFixed(3)})`);
+              
+              for (let i = 0; i < spawnCount; i++) {
+                // Calculate screen position based on tree position
+                const treeScreenX = bounds.width * 0.45;
+                const treeScreenY = bounds.height * 0.55;
+                
+                // Add more variation for multiple petals
+                const branchOffsetX = (Math.random() - 0.5) * 400; // Increased spread
+                const branchOffsetY = (Math.random() - 0.5) * 250;
+                
+                const spawnX = treeScreenX + branchOffsetX;
+                const spawnY = treeScreenY + branchOffsetY;
+                
+                const newPetal = new Petal(spawnX, spawnY);
+                petals.push(newPetal);
+              }
+              
+              // Limit total petals to prevent performance issues
+              while (petals.length > 200) {
+                const oldPetal = petals.shift();
+                oldPetal?.remove();
+              }
+            }
+          }
+        }
+      }
+      
+      // Update petals and remove expired ones
+      for (let i = petals.length - 1; i >= 0; i--) {
+        const shouldContinue = petals[i].update(delta, bounds);
+        if (!shouldContinue) {
+          petals[i].remove();
+          petals.splice(i, 1);
+        }
       }
       
       rafId = requestAnimationFrame(animate);
@@ -163,7 +265,6 @@ export default function SakuraPetals() {
 
     const handleResize = () => {
       cachedBounds = container.getBoundingClientRect();
-      petals.forEach((p) => p.reset());
     };
     window.addEventListener("resize", handleResize);
 
@@ -173,7 +274,7 @@ export default function SakuraPetals() {
       cancelAnimationFrame(rafId);
       petals.forEach((p) => p.remove());
     };
-  }, []);
+  }, []); // Remove branchAnimations from dependencies
 
   return (
     <div

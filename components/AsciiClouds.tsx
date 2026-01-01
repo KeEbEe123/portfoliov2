@@ -136,9 +136,9 @@ export default function AsciiClouds() {
   return (
     <div
       ref={canvasRef}
-      className="w-full h-full font-mono text-[12px] leading-none whitespace-pre text-gray-400 tracking-[2px]"
+      className="w-full h-full font-mono text-[12px] leading-none whitespace-pre text-white tracking-[2px]"
       style={{
-        textShadow: '0 0 5px rgba(0, 0, 0, 0.3)'
+        textShadow: '0 0 5px rgba(255, 255, 255, 1)'
       }}
     />
   );
