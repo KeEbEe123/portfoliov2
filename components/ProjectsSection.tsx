@@ -4,6 +4,7 @@ import { useRef, useEffect } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import DecryptedText from './DecryptedText';
+import SplitText from "./SplitText";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -179,7 +180,7 @@ export default function ProjectsSection() {
                   color: '#FFFECB'
                 }}
               >
-                <DecryptedText speed={200} text={project.description} animateOn="view" revealDirection="center"/>
+                {project.description}
                 
               </p>
             </div>
@@ -194,10 +195,12 @@ export default function ProjectsSection() {
                 style={{ color: '#FFFECB' }}
               >
                 <span style={{ fontFamily: 'EditorialNew, serif' }}>
-                  {project.name.charAt(0)}
+                <DecryptedText speed={200} text={project.name.charAt(0)} animateOn="view" sequential={true}/>
+                  
                 </span>
                 <span style={{ fontFamily: 'Thunder-BlackLC, sans-serif' }}>
-                  {project.name.slice(1)}
+                <DecryptedText speed={200} text={project.name.slice(1)} animateOn="view" sequential={true}/>
+
                 </span>
               </h3>
             </div>

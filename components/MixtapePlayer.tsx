@@ -32,7 +32,7 @@ export default function MixtapePlayer() {
             <div className="text-white/60 text-sm">Spectrum Animation</div>
           </div>
         ) : (
-          // Fallback spectrum visualization
+          // Fallback spectrum visualizationi
           <div className="w-[80%] h-[80%] flex items-end justify-center gap-1 px-4">
             {Array.from({ length: 20 }).map((_, i) => (
               <div
