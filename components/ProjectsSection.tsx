@@ -133,7 +133,7 @@ export default function ProjectsSection() {
       ref={sectionRef}
       className="relative w-full h-screen overflow-hidden"
       style={{ 
-        background: 'linear-gradient(to bottom, #280000 0%, #570000 50%, #570000 100%)'
+        background: 'linear-gradient(to bottom, #470024 0%, #251101 10%, #251101 100%)'
       }}
     >
       {/* Header */}

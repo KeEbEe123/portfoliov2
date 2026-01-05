@@ -288,7 +288,7 @@ export default function Home() {
             </section>
 
             {/* Second Section - Text */}
-            <section className="snap-section relative w-full min-h-[300vh] flex flex-col items-start justify-start pt-32" style={{ backgroundColor: '#280000' }}>
+            <section className="snap-section relative w-full min-h-[250vh] flex flex-col items-start justify-start pt-32" style={{ backgroundColor: '#470024' }}>
               {/* Sakura Snowfall Effect */}
               <SakuraSnowfall />
               
@@ -300,7 +300,7 @@ export default function Home() {
                   style={{ 
                     fontFamily: 'Thunder-BlackLC, sans-serif',
                     fontSize: '240px',
-                    color: '#FFFECB'
+                    color: '#F7B538'
                   }}
                 >
                   <span className="block">
@@ -430,7 +430,10 @@ export default function Home() {
                       </div>
                       
                       {/* Artwork Display */}
-                      <div className="flex-1 min-w-[220px]">
+                      <div 
+                        className="flex-1 min-w-[220px] hover:scale-105 transition-all duration-200 hover:cursor-pointer"
+                        onClick={() => window.open('https://www.instagram.com/_.keebee._/', '_blank')}
+                      >
                         <ArtworkDisplay />
                       </div>
                     </div>
