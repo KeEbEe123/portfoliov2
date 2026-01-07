@@ -288,7 +288,7 @@ export default function Home() {
             </section>
 
             {/* Second Section - Text */}
-            <section className="snap-section relative w-full min-h-[250vh] flex flex-col items-start justify-start pt-32" style={{ backgroundColor: '#470024' }}>
+            <section className="snap-section relative w-full min-h-[250vh] 2xl:min-h-[210vh] flex flex-col items-start justify-start pt-32" style={{ backgroundColor: '#470024' }}>
               {/* Sakura Snowfall Effect */}
               <SakuraSnowfall />
               
@@ -376,7 +376,7 @@ export default function Home() {
               </div>
 
               {/* Asymmetric Grid Layout */}
-              <div className="max-w-6xl mx-auto px-8">
+              <div className="2xl:max-w-[1380px] max-w-6xl mx-auto px-8">
                 <div className="grid grid-cols-5 grid-rows-2 gap-4 h-[80vh] grid-container">
                   
                   {/* Top Left - Paragraph (wider - 3 columns) */}

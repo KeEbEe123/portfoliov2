@@ -140,9 +140,8 @@ export default function ProjectsSection() {
       <div className="absolute top-20 left-0 right-0 z-10 flex items-center justify-center px-64">
         <div className="flex-1 h-px" style={{ backgroundColor: '#FFFECB' }}></div>
         <h2 
-          className="px-8 text-5xl"
+          className="px-8 text-3xl font-dm-sans"
           style={{ 
-            fontFamily: 'PPPlayground-Thin, sans-serif',
             color: '#FFFECB'
           }}
         >
