@@ -1,36 +1,156 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Portfolio V2
+
+A modern, interactive portfolio website built with Next.js, featuring smooth animations, 3D graphics, and real-time integrations with GitHub, LeetCode, and Spotify.
+
+## Features
+
+- **3D Sakura Scene**: Interactive Three.js scene with cherry blossom petals and atmospheric effects
+- **Smooth Scrolling**: GSAP-powered smooth scroll experience with scroll-triggered animations
+- **Real-time Stats**: Live integration with GitHub, LeetCode, and Spotify APIs
+- **Interactive Components**: 
+  - Digicam-style photo viewer
+  - Mixtape music player with Spotify integration
+  - Animated text reveals
+  - GitHub contribution calendar
+  - Dynamic artwork display
+- **Responsive Design**: Fully responsive layout with Tailwind CSS
+- **Performance Optimized**: Loading states, lazy loading, and optimized animations
+
+## Tech Stack
+
+- **Framework**: Next.js 16 (App Router)
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS 4
+- **Animations**: GSAP (ScrollSmoother, ScrollTrigger)
+- **3D Graphics**: Three.js with React Three Fiber
+- **Charts**: Chart.js
+- **UI Components**: Custom components with Lucide icons
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
+- Node.js 18+ 
+- npm or yarn
+
+### Installation
+
+1. Clone the repository:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone <repository-url>
+cd portfoliov2
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Install dependencies:
+```bash
+npm install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. Create a `.env` file in the root directory and add your API credentials:
+```env
+GITHUB_TOKEN=your_github_token
+SPOTIFY_CLIENT_ID=your_spotify_client_id
+SPOTIFY_CLIENT_SECRET=your_spotify_client_secret
+SPOTIFY_REFRESH_TOKEN=your_spotify_refresh_token
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+4. Run the development server:
+```bash
+npm run dev
+```
 
-## Learn More
+5. Open [http://localhost:3000](http://localhost:3000) in your browser
 
-To learn more about Next.js, take a look at the following resources:
+## Project Structure
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```
+portfoliov2/
+├── app/
+│   ├── api/              # API routes
+│   │   ├── github-stats/ # GitHub statistics endpoint
+│   │   └── spotify/      # Spotify integration endpoints
+│   ├── globals.css       # Global styles
+│   ├── layout.tsx        # Root layout
+│   └── page.tsx          # Main page
+├── components/           # React components
+│   ├── ArtworkDisplay.tsx
+│   ├── AsciiClouds.tsx
+│   ├── CompactLeetCodeStats.tsx
+│   ├── DigicamViewer.tsx
+│   ├── GitHubStats.tsx
+│   ├── MixtapePlayer.tsx
+│   ├── ProjectsSection.tsx
+│   ├── SakuraScene.tsx
+│   └── ...
+├── public/
+│   ├── assets/          # Images and icons
+│   ├── models/          # 3D models
+│   └── textures/        # Texture files
+└── lib/
+    └── utils.ts         # Utility functions
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## API Integrations
 
-## Deploy on Vercel
+### GitHub Stats
+Fetches real-time GitHub statistics including:
+- Total contributions
+- Current streak
+- Top languages
+- Activity radar (commits, PRs, issues, reviews, repos, stars)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### LeetCode Stats
+Displays coding challenge statistics from LeetCode profile
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Spotify Integration
+Shows recently played tracks with album artwork and playback information
+
+## Scripts
+
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm start` - Start production server
+- `npm run lint` - Run ESLint
+
+## Customization
+
+### Fonts
+Custom fonts are located in `/public`:
+- EditorialNew-UltralightItalic.otf
+- PPPlayground-Thin.otf
+- Thunder-BlackLC.ttf
+
+### Colors
+Main color scheme:
+- Primary: `#470024` (Deep burgundy)
+- Accent: `#F7B538` (Golden yellow)
+- Text: `#FFFECB` (Cream)
+
+### Animations
+GSAP animations can be customized in `app/page.tsx`:
+- Scroll smoothness: `smooth: 1.5`
+- Letter reveal timing
+- Grid cell slide directions
+
+## Performance
+
+- Lazy loading for 3D components
+- Optimized image loading
+- Smooth scroll with hardware acceleration
+- Loading states for API calls
+
+## Browser Support
+
+- Chrome (latest)
+- Firefox (latest)
+- Safari (latest)
+- Edge (latest)
+
+## License
+
+Private project - All rights reserved
+
+## Contact
+
+- Instagram: [@_.keebee._](https://www.instagram.com/_.keebee._/)
+- GitHub: [KeEbEe123](https://github.com/KeEbEe123)
