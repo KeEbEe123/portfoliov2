@@ -24,13 +24,13 @@ const projects: Project[] = [
   },
   {
     id: 2,
-    name: "NEXUSFLOW",
+    name: "HIRE-AI",
     description: "An intelligent workflow automation system that connects multiple services and APIs seamlessly.",
     image: "/assets/project2.jpg"
   },
   {
     id: 3,
-    name: "DATAFORGE",
+    name: "Suraksha",
     description: "A powerful data visualization and analytics dashboard for processing large-scale datasets.",
     image: "/assets/project3.jpg"
   }
