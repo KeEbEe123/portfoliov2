@@ -23,6 +23,13 @@
   font-style: italic;
 }
 
+@font-face {
+  font-family: 'PPPlayground-Thin';
+  src: url('/PPPlayground-Thin.otf') format('opentype');
+  font-weight: 100;
+  font-style: normal;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);

@@ -4,7 +4,14 @@ import { useRef, useEffect } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import DecryptedText from './DecryptedText';
-import SplitText from "./SplitText";
+import Autoplay from "embla-carousel-autoplay";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -12,27 +19,50 @@ interface Project {
   id: number;
   name: string;
   description: string;
-  image: string;
+  images: string[];
 }
 
 const projects: Project[] = [
   {
     id: 1,
-    name: "CODESENSE",
-    description: "A real-time collaborative coding platform with AI-powered suggestions and live debugging capabilities.",
-    image: "/assets/project1.jpg"
+    name: "Voice AI",
+    description: "This project is an AI-assisted chord transposition platform aimed at helping beginner singers find keys that suit their vocal range. Using React and TensorFlow, the application integrates machine learning models through custom APIs to dynamically shift song keys in real time. Supporting over 100 songs, the system simplifies music practice by eliminating manual transposition and showcases the practical application of ML in creative tools with a clean, user-friendly interface",
+    images: [
+      "/projects/voiceai-1.png",
+      "/projects/voiceai-2.jpeg",
+      "/projects/voiceai-3.jpeg",
+    ]
   },
   {
     id: 2,
-    name: "HIRE-AI",
-    description: "An intelligent workflow automation system that connects multiple services and APIs seamlessly.",
-    image: "/assets/project2.jpg"
+    name: "THERE",
+    description: "A real-time collaborative coding platform with AI-powered suggestions and live debugging capabilities.",
+    images: [
+      "/projects/there-1.png",
+      "/projects/there-2.png"
+    ]
   },
   {
     id: 3,
+    name: "HIRE-AI",
+    description: "HireAI is an end-to-end AI hiring copilot built with Next.js, Supabase, and large language models to streamline recruitment workflows. It enables natural-language candidate search, automated resume parsing, explainable candidate ranking, interview question generation, and personalized outreach. Designed for scale, the system can process and analyze data from 1,000+ candidates simultaneously, delivering real-time insights and analytics that help recruiters make faster, more informed hiring decisions.",
+    images: [
+      "/projects/hireAI-1.png",
+      "/projects/hireAI-2.png",
+      "/projects/hireAI-3.png",
+      "/projects/hireAI-4.png"
+    ]
+  },
+  {
+    id: 4,
     name: "Suraksha",
     description: "A powerful data visualization and analytics dashboard for processing large-scale datasets.",
-    image: "/assets/project3.jpg"
+    images: [
+      "/projects/suraksha-1.png",
+      "/projects/suraksha-2.png",
+      "/projects/suraksha-3.png",
+      "/projects/suraksha-4.png"
+    ]
   }
 ];
 
@@ -142,10 +172,11 @@ export default function ProjectsSection() {
         <h2 
           className="px-8 text-3xl font-dm-sans"
           style={{ 
-            color: '#FFFECB'
+            color: '#FFFECB',
+            fontFamily: 'PPPlayground-Thin' 
           }}
         >
-          projects
+          Projects
         </h2>
         <div className="flex-1 h-px" style={{ backgroundColor: '#FFFECB' }}></div>
       </div>
@@ -170,7 +201,7 @@ export default function ProjectsSection() {
             {/* Left side - Description */}
             <div 
               className="absolute left-0 top-0 -translate-y-1/2 z-10"
-              style={{ width: '35%' }}
+              style={{ width: '55%' }}
             >
               <p 
                 className="text-xl leading-relaxed"
@@ -193,7 +224,7 @@ export default function ProjectsSection() {
                 className="text-[160px] leading-none"
                 style={{ color: '#FFFECB' }}
               >
-                <span style={{ fontFamily: 'EditorialNew, serif' }}>
+                <span style={{ fontFamily: 'PPPlayground-Thin' }}>
                 <DecryptedText speed={200} text={project.name.charAt(0)} animateOn="view" sequential={true}/>
                   
                 </span>
@@ -206,25 +237,54 @@ export default function ProjectsSection() {
 
             {/* Project Image/Screenshot Box - 60% width from right */}
             <div 
-              className="absolute right-0 h-full rounded-2xl overflow-hidden"
+              className="absolute right-0 h-full rounded-2xl overflow-hidden group"
               style={{ 
                 width: '60%',
                 backgroundColor: '#1a1a1a',
                 border: '2px solid rgba(255, 254, 203, 0.2)'
               }}
             >
-              {/* Placeholder for screenshot */}
-              <div className="w-full h-full flex items-center justify-center bg-linear-to-br from-gray-800 to-gray-900">
-                <span 
-                  className="text-6xl opacity-20"
-                  style={{ 
-                    fontFamily: 'Thunder-BlackHC, sans-serif',
-                    color: '#FFFECB'
-                  }}
-                >
-                  {project.name}
-                </span>
-              </div>
+              <Carousel 
+                className="w-full h-full"
+                opts={{
+                  align: "start",
+                  loop: true,
+                }}
+                plugins={[
+                  Autoplay({
+                    delay: 3000,
+                  }),
+                ]}
+              >
+                <CarouselContent className="h-full -ml-0">
+                  {project.images.map((image, index) => (
+                    <CarouselItem key={index} className="h-full pl-0">
+                      <div className="relative w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-800 to-gray-900 p-6">
+                        <img
+                          src={image}
+                          alt={`${project.name} screenshot ${index + 1}`}
+                          className="w-full h-full object-contain rounded-lg"
+                          style={{ 
+                            maxHeight: '100%', 
+                            maxWidth: '100%',
+                            objectFit: 'contain'
+                          }}
+                        />
+                      </div>
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+                
+                {/* Navigation Arrows - Only show on hover */}
+                <CarouselPrevious 
+                  className="left-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 border-none text-3xl flex items-center justify-center transition-all duration-200 disabled:opacity-30 opacity-0 group-hover:opacity-100"
+                  style={{ color: '#FFFECB', width: '40px', height: '40px' }}
+                />
+                <CarouselNext 
+                  className="right-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 border-none text-3xl flex items-center justify-center transition-all duration-200 disabled:opacity-30 opacity-0 group-hover:opacity-100"
+                  style={{ color: '#FFFECB', width: '40px', height: '40px' }}
+                />
+              </Carousel>
             </div>
           </div>
         ))}

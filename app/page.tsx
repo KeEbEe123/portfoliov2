@@ -13,6 +13,7 @@ import GitHubStats from "@/components/GitHubStats";
 import ArtworkDisplay from "@/components/ArtworkDisplay";
 import {GitHubCalendar} from 'react-github-calendar';
 import ProjectsSection from "@/components/ProjectsSection";
+import Footer from "@/components/Footer";
 
 gsap.registerPlugin(ScrollSmoother, ScrollTrigger);
 
@@ -465,6 +466,9 @@ export default function Home() {
 
             {/* Third Section - Projects */}
             <ProjectsSection />
+
+            {/* Footer */}
+            <Footer />
         </main>
       </div>
     </div>
