@@ -96,11 +96,11 @@ export default function Footer() {
             </h3>
             <div className="space-y-3">
               <a 
-                href="mailto:contact@yourname.com"
+                href="mailto:keertan.k@gmail.com"
                 className="block text-lg hover:text-yellow-400 transition-colors duration-300"
                 style={{ fontFamily: 'EditorialNew, serif', color: '#FFFECB' }}
               >
-                {animateText("contact@yourname.com")}
+                {animateText("keertan.k@gmail.com")}
               </a>
               <a 
                 href="https://www.instagram.com/_.keebee._/"
@@ -133,31 +133,52 @@ export default function Footer() {
             </h3>
             <div className="space-y-3">
               <button 
-                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                className="block text-lg hover:text-yellow-400 transition-colors duration-300 text-left"
-                style={{ fontFamily: 'EditorialNew, serif', color: '#FFFECB' }}
-              >
-                {animateText("Back to Top")}
-              </button>
-              <button 
                 onClick={() => {
-                  const aboutSection = document.querySelector('.grid-container');
-                  aboutSection?.scrollIntoView({ behavior: 'smooth' });
+                  const homeSection = document.getElementById('home');
+                  if (homeSection) {
+                    homeSection.scrollIntoView({ behavior: 'smooth' });
+                  }
                 }}
                 className="block text-lg hover:text-yellow-400 transition-colors duration-300 text-left"
                 style={{ fontFamily: 'EditorialNew, serif', color: '#FFFECB' }}
               >
-                {animateText("About Me")}
+                {animateText("Home")}
               </button>
               <button 
                 onClick={() => {
-                  const projectsSection = document.querySelector('section[style*="linear-gradient"]');
-                  projectsSection?.scrollIntoView({ behavior: 'smooth' });
+                  const aboutSection = document.getElementById('about-section');
+                  if (aboutSection) {
+                    aboutSection.scrollIntoView({ behavior: 'smooth' });
+                  }
+                }}
+                className="block text-lg hover:text-yellow-400 transition-colors duration-300 text-left"
+                style={{ fontFamily: 'EditorialNew, serif', color: '#FFFECB' }}
+              >
+                {animateText("About")}
+              </button>
+              <button 
+                onClick={() => {
+                  const projectsSection = document.getElementById('projects-section');
+                  if (projectsSection) {
+                    projectsSection.scrollIntoView({ behavior: 'smooth' });
+                  }
                 }}
                 className="block text-lg hover:text-yellow-400 transition-colors duration-300 text-left"
                 style={{ fontFamily: 'EditorialNew, serif', color: '#FFFECB' }}
               >
                 {animateText("Projects")}
+              </button>
+              <button 
+                onClick={() => {
+                  const dumpSection = document.getElementById('dump-section');
+                  if (dumpSection) {
+                    dumpSection.scrollIntoView({ behavior: 'smooth' });
+                  }
+                }}
+                className="block text-lg hover:text-yellow-400 transition-colors duration-300 text-left"
+                style={{ fontFamily: 'EditorialNew, serif', color: '#FFFECB' }}
+              >
+                {animateText("Dump")}
               </button>
             </div>
           </div>

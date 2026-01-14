@@ -160,20 +160,20 @@ export default function ProjectsSection() {
 
   return (
     <section 
+      id="projects-section"
       ref={sectionRef}
-      className="relative w-full h-screen overflow-hidden"
+      className="snap-section relative w-full h-screen overflow-hidden"
       style={{ 
         background: 'linear-gradient(to bottom, #470024 0%, #251101 10%, #251101 100%)'
       }}
     >
       {/* Header */}
-      <div className="absolute top-20 left-0 right-0 z-10 flex items-center justify-center px-64">
+      <div className="absolute top-20 left-0 right-0 z-10 flex items-center justify-center px-64 font-dm-sans">
         <div className="flex-1 h-px" style={{ backgroundColor: '#FFFECB' }}></div>
         <h2 
           className="px-8 text-3xl font-dm-sans"
           style={{ 
             color: '#FFFECB',
-            fontFamily: 'PPPlayground-Thin' 
           }}
         >
           Projects

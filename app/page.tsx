@@ -13,6 +13,7 @@ import GitHubStats from "@/components/GitHubStats";
 import ArtworkDisplay from "@/components/ArtworkDisplay";
 import {GitHubCalendar} from 'react-github-calendar';
 import ProjectsSection from "@/components/ProjectsSection";
+import WorkDump from "@/components/WorkDump";
 import Footer from "@/components/Footer";
 
 gsap.registerPlugin(ScrollSmoother, ScrollTrigger);
@@ -23,6 +24,15 @@ export default function Home() {
   const topBarRef = useRef<HTMLDivElement>(null);
   const [isLoading, setIsLoading] = useState(true);
   const lastScrollY = useRef(0);
+  const smootherRef = useRef<any>(null);
+  const [activeSection, setActiveSection] = useState<string>('home');
+
+  const sections = [
+    { id: 'home', name: 'Home', index: 0 },
+    { id: 'about-section', name: 'About', index: 1 },
+    { id: 'projects-section', name: 'Projects', index: 2 },
+    { id: 'dump-section', name: 'Dump', index: 3 },
+  ];
 
   useEffect(() => {
     if (!smoothWrapperRef.current || !smoothContentRef.current) return;
@@ -33,6 +43,8 @@ export default function Home() {
       smooth: 1.5,
       effects: true,
     });
+
+    smootherRef.current = smoother;
 
     // Top bar scroll animation
     const handleScroll = () => {
@@ -56,6 +68,27 @@ export default function Home() {
           });
         }
       }
+      
+      // Track active section
+      const windowHeight = window.innerHeight;
+      const scrollPosition = currentScrollY + windowHeight / 2;
+      
+      sections.forEach((section) => {
+        const element = section.id === 'home' 
+          ? document.querySelector('.snap-section')
+          : document.getElementById(section.id);
+        
+        if (element) {
+          const rect = element.getBoundingClientRect();
+          const elementTop = rect.top + currentScrollY;
+          const elementBottom = elementTop + rect.height;
+          
+          // Check if section is in view
+          if (scrollPosition >= elementTop && scrollPosition <= elementBottom) {
+            setActiveSection(section.id);
+          }
+        }
+      });
       
       lastScrollY.current = currentScrollY;
     };
@@ -250,16 +283,69 @@ export default function Home() {
         </div>
       )}
 
+      {/* Scroll Indicator */}
+      <div className="fixed right-8 top-1/2 -translate-y-1/2 z-50 flex flex-col gap-4">
+        {sections.map((section) => {
+          const isActive = activeSection === section.id;
+          
+          return (
+            <button
+              key={section.id}
+              onClick={() => {
+                if (section.id === 'home') {
+                  if (smootherRef.current) {
+                    smootherRef.current.scrollTo(0, true);
+                  }
+                } else {
+                  const element = document.getElementById(section.id);
+                  if (element && smootherRef.current) {
+                    smootherRef.current.scrollTo(element, true);
+                  }
+                }
+              }}
+              className="group relative flex items-center justify-end h-8"
+            >
+              {/* Morphing bar container */}
+              <div 
+                className={`relative h-1 rounded-full bg-[#ff34b8ff] transition-all duration-300 flex items-center justify-start px-3 overflow-hidden group-hover:h-8 group-hover:w-32 ${
+                  isActive ? 'w-12' : 'w-12'
+                }`}
+                style={{ 
+                  opacity: isActive ? 1 : 0.3,
+                }}
+              >
+                {/* Text that appears on hover */}
+                <span 
+                  className="text-[#FFFECB] text-base font-dm-sans whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                >
+                  {section.name}
+                </span>
+              </div>
+            </button>
+          );
+        })}
+      </div>
+
       {/* Transparent Top Bar with Logo */}
       <div 
         ref={topBarRef}
         className="fixed top-0 left-0 right-0 z-50 h-20 backdrop-blur-sm border-b border-white/10"
       >
-        <div className="flex items-center h-full px-6">
+        <style jsx>{`
+          @font-face {
+            font-family: 'Thunder';
+            src: url('/Thunder-ExtraBoldLC.ttf') format('opentype');
+            font-weight: normal;
+            font-style: normal;
+          }
+        `}</style>
+        <div className="flex items-center justify-between h-full px-6">
           <div 
             className="group cursor-pointer relative"
             onClick={() => {
-              window.scrollTo({ top: 0, behavior: 'smooth' });
+              if (smootherRef.current) {
+                smootherRef.current.scrollTo(0, true);
+              }
             }}
           >
             <img 
@@ -270,9 +356,44 @@ export default function Home() {
             <img 
               src="/assets/logobg.svg" 
               alt="Logo Background" 
-              className="absolute w-26 h-26 top-1 group-hover:left-0 group-hover:top-0 transition-all duration-400 -z-10 brightness-10
-              "
+              className="absolute w-26 h-26 top-1 group-hover:left-0 group-hover:top-0 transition-all duration-400 -z-10 brightness-10"
             />
+          </div>
+          
+          <div className="flex gap-8">
+            <button 
+              onClick={() => {
+                const section = document.getElementById('about-section');
+                if (section && smootherRef.current) {
+                  smootherRef.current.scrollTo(section, true);
+                }
+              }}
+              className="text-[#FFFECB] hover:text-[#FFFECB]/80 transition-colors text-xl font-dm-sans"
+            >
+              about
+            </button>
+            <button 
+              onClick={() => {
+                const section = document.getElementById('projects-section');
+                if (section && smootherRef.current) {
+                  smootherRef.current.scrollTo(section, true);
+                }
+              }}
+              className="text-[#FFFECB] hover:text-[#FFFECB]/80 transition-colors text-xl font-dm-sans"
+            >
+              projects
+            </button>
+            <button 
+              onClick={() => {
+                const section = document.getElementById('dump-section');
+                if (section && smootherRef.current) {
+                  smootherRef.current.scrollTo(section, true);
+                }
+              }}
+              className="text-[#FFFECB] hover:text-[#FFFECB]/80 transition-colors text-xl font-dm-sans"
+            >
+              dump
+            </button>
           </div>
         </div>
       </div>
@@ -281,7 +402,7 @@ export default function Home() {
         <div ref={smoothContentRef} id="smooth-content">
           <main className="relative w-full">
             {/* First Section - Sakura Scene */}
-            <section className="snap-section relative w-full h-screen">
+            <section className="snap-section relative w-full h-screen" id="home">
               <SakuraScene onLoaded={() => {
                 console.log('onLoaded callback triggered');
                 setIsLoading(false);
@@ -289,7 +410,7 @@ export default function Home() {
             </section>
 
             {/* Second Section - Text */}
-            <section className="snap-section relative w-full min-h-[250vh] 2xl:min-h-[210vh] flex flex-col items-start justify-start pt-32" style={{ backgroundColor: '#470024' }}>
+            <section id="about-section" className="snap-section relative w-full flex flex-col items-start justify-start pt-32 pb-16" style={{ backgroundColor: '#470024' }}>
               {/* Sakura Snowfall Effect */}
               <SakuraSnowfall />
               
@@ -386,14 +507,13 @@ export default function Home() {
                       className="text-3xl leading-relaxed"
                       style={{ fontFamily: 'EditorialNew, serif', color: '#FFFECB' }}
                     >
-                      {"I'm passionate about creating digital experiences that bridge the gap between complex technology and human needs. My work spans full-stack development, AI integration, and real-time systems, always with a focus on building products that are both intelligent and intuitive.".split('').map((char, index) => (
+                      {"I'm passionate about creating digital experiences that bridge the gap between complex technology and human needs. My work spans full-stack development, AI integration, and real-time systems, always with a focus on building products that are both intelligent and intuitive.".split(' ').map((word, index) => (
                         <span 
-                          key={`para-${index}`} 
-                          className="inline-block about-letter" 
-                          data-letter={char === ' ' ? 'space' : char}
+                          key={`word-${index}`} 
+                          className="inline-block about-letter mr-[0.25em]"
                           style={{ transformOrigin: 'bottom center' }}
                         >
-                          {char === ' ' ? '\u00A0' : char}
+                          {word}
                         </span>
                       ))}
                     </p>
@@ -417,7 +537,7 @@ export default function Home() {
                   </div>
 
                   {/* Bottom Right - Stats and Artwork Grid (3 columns) */}
-                  <div className="col-span-3 rounded-lg flex flex-col gap-3 min-h-[400px] grid-cell" data-direction="top">
+                  <div className="col-span-3 rounded-lg flex flex-col gap-3 min-h-[400px] grid-cell" data-direction="bottom">
                     {/* Top row - Stats and Artwork */}
                     <div className="flex gap-3 h-[200px] flex-shrink-0">
                       {/* LeetCode Stats */}
@@ -466,6 +586,9 @@ export default function Home() {
 
             {/* Third Section - Projects */}
             <ProjectsSection />
+
+            {/* Work Dump Section */}
+            <WorkDump />
 
             {/* Footer */}
             <Footer />
