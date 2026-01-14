@@ -161,7 +161,7 @@ export default function CompactLeetCodeStats() {
         </p>
         <div className="flex items-baseline">
           <span className="font-bold text-[48px] text-[#fffecb] -mt-4" style={{ fontFamily: 'DM Sans, sans-serif' }} >
-            <CountUp from={0} to={data.totalSolved} direction="up" duration={2} separator="," className="count-up-text"/>
+            <CountUp from={0} to={data.totalSolved} direction="up" duration={2} separator="," className="count-up-text" onStart={() => {}} onEnd={() => {}}/>
           </span>
           <span className="font-bold text-[16px] text-[#fffecb]" style={{ fontFamily: 'DM Sans, sans-serif' }}>
             /{data.totalQuestions}
@@ -177,14 +177,14 @@ export default function CompactLeetCodeStats() {
       {/* Difficulty Stats */}
       <div className="absolute bottom-4 left-4 z-10 space-y-0">
         <p className="text-[14px] font-bold text-[#1eb5b6]" style={{ fontFamily: 'Figtree, sans-serif' }}>
-          Easy: <CountUp from={0} to={data.easySolved} direction="up" duration={1} separator="," className="count-up-text"/>
+          Easy: <CountUp from={0} to={data.easySolved} direction="up" duration={1} separator="," className="count-up-text" onStart={() => {}} onEnd={() => {}}/>
 
         </p>
         <p className="text-[14px] font-bold text-[#f4b307]" style={{ fontFamily: 'Figtree, sans-serif' }}>
-          Medium: <CountUp from={0} to={data.mediumSolved} direction="up" duration={1} separator="," className="count-up-text"/>
+          Medium: <CountUp from={0} to={data.mediumSolved} direction="up" duration={1} separator="," className="count-up-text" onStart={() => {}} onEnd={() => {}}/>
         </p>
         <p className="text-[14px] font-bold text-[#822222]" style={{ fontFamily: 'Figtree, sans-serif' }}>
-          Hard: <CountUp from={0} to={data.hardSolved} direction="up" duration={1} separator="," className="count-up-text"/>
+          Hard: <CountUp from={0} to={data.hardSolved} direction="up" duration={1} separator="," className="count-up-text" onStart={() => {}} onEnd={() => {}}/>
         </p>
       </div>
     </div>
