@@ -77,7 +77,6 @@ function LimitedOrbitControls() {
   return (
     <OrbitControls
       ref={controlsRef}
-      args={[camera, gl.domElement]}
       onStart={handleStart}
       onEnd={handleEnd}
     />

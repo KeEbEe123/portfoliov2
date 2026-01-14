@@ -217,7 +217,7 @@ interface SakuraSceneProps {
 export default function SakuraScene({ onLoaded }: SakuraSceneProps) {
   const [modelLoaded, setModelLoaded] = useState(false);
   const [branchAnimations, setBranchAnimations] = useState({});
-  const [sceneCamera, setSceneCamera] = useState(null);
+  const [sceneCamera, setSceneCamera] = useState<THREE.Camera | null>(null);
 
   useEffect(() => {
     console.log('SakuraScene mounted');

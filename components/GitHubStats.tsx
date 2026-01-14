@@ -160,6 +160,8 @@ export default function GitHubStats() {
                 to={data.totalContributions}
                 duration={2}
                 separator=","
+                onStart={() => {}}
+                onEnd={() => {}}
               />
             </span>
           </div>
