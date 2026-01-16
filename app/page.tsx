@@ -15,6 +15,13 @@ import {GitHubCalendar} from 'react-github-calendar';
 import ProjectsSection from "@/components/ProjectsSection";
 import WorkDump from "@/components/WorkDump";
 import Footer from "@/components/Footer";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 
 gsap.registerPlugin(ScrollSmoother, ScrollTrigger);
 
@@ -26,6 +33,7 @@ export default function Home() {
   const lastScrollY = useRef(0);
   const smootherRef = useRef<any>(null);
   const [activeSection, setActiveSection] = useState<string>('home');
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const sections = [
     { id: 'home', name: 'Home', index: 0 },
@@ -45,6 +53,43 @@ export default function Home() {
     });
 
     smootherRef.current = smoother;
+
+    // Close mobile menu when clicking outside
+    const handleClickOutside = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (isMobileMenuOpen && !target.closest('.mobile-menu-container')) {
+        setIsMobileMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+
+    // Dynamic title based on tab focus
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        document.title = ":(";
+      } else {
+        document.title = "Keertan's Portfolio";
+      }
+    };
+
+    // Set initial title
+    document.title = "Keertan's Portfolio";
+
+    // Listen for visibility changes
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    // Also listen for blur/focus events as fallback
+    const handleBlur = () => {
+      document.title = ":(";
+    };
+
+    const handleFocus = () => {
+      document.title = "Keertan's Portfolio";
+    };
+
+    window.addEventListener('blur', handleBlur);
+    window.addEventListener('focus', handleFocus);
 
     // Top bar scroll animation
     const handleScroll = () => {
@@ -268,6 +313,10 @@ export default function Home() {
     return () => {
       smoother.kill();
       window.removeEventListener('scroll', handleScroll);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener('blur', handleBlur);
+      window.removeEventListener('focus', handleFocus);
+      document.removeEventListener('mousedown', handleClickOutside);
       ScrollTrigger.getAll().forEach(trigger => trigger.kill());
     };
   }, []);
@@ -283,8 +332,8 @@ export default function Home() {
         </div>
       )}
 
-      {/* Scroll Indicator */}
-      <div className="fixed right-8 top-1/2 -translate-y-1/2 z-50 flex flex-col gap-4">
+      {/* Scroll Indicator - Hidden on mobile */}
+      <div className="hidden md:flex fixed right-8 top-1/2 -translate-y-1/2 z-50 flex-col gap-4">
         {sections.map((section) => {
           const isActive = activeSection === section.id;
           
@@ -329,7 +378,7 @@ export default function Home() {
       {/* Transparent Top Bar with Logo */}
       <div 
         ref={topBarRef}
-        className="fixed top-0 left-0 right-0 z-50 h-20 backdrop-blur-sm border-b border-white/10"
+        className="fixed top-0 left-0 right-0 z-50 h-20 backdrop-blur-sm border-b border-white/10 mobile-menu-container"
       >
         <style jsx>{`
           @font-face {
@@ -339,28 +388,30 @@ export default function Home() {
             font-style: normal;
           }
         `}</style>
-        <div className="flex items-center justify-between h-full px-6">
+        <div className="flex items-center justify-between h-full px-4 md:px-6">
           <div 
             className="group cursor-pointer relative"
             onClick={() => {
               if (smootherRef.current) {
                 smootherRef.current.scrollTo(0, true);
               }
+              setIsMobileMenuOpen(false);
             }}
           >
             <img 
               src="/assets/logo.svg" 
               alt="Logo" 
-              className="w-26 h-26 relative z-10"
+              className="w-20 h-20 md:w-26 md:h-26 relative z-10"
             />
             <img 
               src="/assets/logobg.svg" 
               alt="Logo Background" 
-              className="absolute w-26 h-26 top-1 group-hover:left-0 group-hover:top-0 transition-all duration-400 -z-10 brightness-10"
+              className="absolute w-20 h-20 md:w-26 md:h-26 top-1 group-hover:left-0 group-hover:top-0 transition-all duration-400 -z-10 brightness-10"
             />
           </div>
           
-          <div className="flex gap-8">
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex gap-8">
             <button 
               onClick={() => {
                 const section = document.getElementById('about-section');
@@ -395,6 +446,75 @@ export default function Home() {
               dump
             </button>
           </div>
+
+          {/* Mobile Hamburger Menu */}
+          <button
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="md:hidden flex flex-col gap-1.5 w-8 h-8 justify-center items-center z-50"
+            aria-label="Toggle menu"
+          >
+            <span 
+              className={`w-6 h-0.5 bg-[#FFFECB] transition-all duration-300 ${
+                isMobileMenuOpen ? 'rotate-45 translate-y-2' : ''
+              }`}
+            />
+            <span 
+              className={`w-6 h-0.5 bg-[#FFFECB] transition-all duration-300 ${
+                isMobileMenuOpen ? 'opacity-0' : ''
+              }`}
+            />
+            <span 
+              className={`w-6 h-0.5 bg-[#FFFECB] transition-all duration-300 ${
+                isMobileMenuOpen ? '-rotate-45 -translate-y-2' : ''
+              }`}
+            />
+          </button>
+        </div>
+
+        {/* Mobile Menu Dropdown */}
+        <div 
+          className={`md:hidden absolute top-full left-0 right-0 backdrop-blur-md bg-[#470024]/95 border-b border-white/10 transition-all duration-300 overflow-hidden ${
+            isMobileMenuOpen ? 'max-h-64 opacity-100' : 'max-h-0 opacity-0'
+          }`}
+        >
+          <div className="flex flex-col py-4 px-6 gap-4">
+            <button 
+              onClick={() => {
+                const section = document.getElementById('about-section');
+                if (section && smootherRef.current) {
+                  smootherRef.current.scrollTo(section, true);
+                }
+                setIsMobileMenuOpen(false);
+              }}
+              className="text-[#FFFECB] hover:text-[#FFFECB]/80 transition-colors text-xl font-dm-sans text-left py-2"
+            >
+              about
+            </button>
+            <button 
+              onClick={() => {
+                const section = document.getElementById('projects-section');
+                if (section && smootherRef.current) {
+                  smootherRef.current.scrollTo(section, true);
+                }
+                setIsMobileMenuOpen(false);
+              }}
+              className="text-[#FFFECB] hover:text-[#FFFECB]/80 transition-colors text-xl font-dm-sans text-left py-2"
+            >
+              projects
+            </button>
+            <button 
+              onClick={() => {
+                const section = document.getElementById('dump-section');
+                if (section && smootherRef.current) {
+                  smootherRef.current.scrollTo(section, true);
+                }
+                setIsMobileMenuOpen(false);
+              }}
+              className="text-[#FFFECB] hover:text-[#FFFECB]/80 transition-colors text-xl font-dm-sans text-left py-2"
+            >
+              dump
+            </button>
+          </div>
         </div>
       </div>
 
@@ -414,14 +534,13 @@ export default function Home() {
               {/* Sakura Snowfall Effect */}
               <SakuraSnowfall />
               
-              <div className="w-full flex justify-center">
+              <div className="w-full flex justify-center px-4">
                 <div className="text-center relative z-20">
                 <h1 
                   id="animated-text"
-                  className="leading-none"
+                  className="leading-none text-[80px] sm:text-[120px] md:text-[160px] lg:text-[200px] xl:text-[240px]"
                   style={{ 
                     fontFamily: 'Thunder-BlackLC, sans-serif',
-                    fontSize: '240px',
                     color: '#F7B538'
                   }}
                 >
@@ -480,9 +599,9 @@ export default function Home() {
               {/* About Me Section within same container */}
               <div className="w-full relative z-20 mt-8">
                 {/* Header with separators */}
-                <div className="flex items-center justify-center mb-16 px-64">
+                <div className="flex items-center justify-center mb-2 md:mb-16 px-4 md:px-32 lg:px-64">
                 <div className="flex-1 h-px" style={{ backgroundColor: '#FFFECB' }}></div>
-                <h2 className="px-8 text-3xl font-dm-sans" style={{ color: '#FFFECB' }}>
+                <h2 className="px-4 md:px-8 text-xl md:text-2xl lg:text-3xl font-dm-sans whitespace-nowrap" style={{ color: '#FFFECB' }}>
                   {"About Me".split('').map((char, index) => (
                     <span 
                       key={`header-${index}`} 
@@ -497,9 +616,15 @@ export default function Home() {
                 <div className="flex-1 h-px" style={{ backgroundColor: '#FFFECB' }}></div>
               </div>
 
+              {/* Swipe indicator - Mobile only, below header */}
+              <div className="md:hidden text-center mb-6 text-[#FFFECB]/60 text-sm font-dm-sans">
+                Swipe to explore →
+              </div>
+
               {/* Asymmetric Grid Layout */}
-              <div className="2xl:max-w-[1380px] max-w-6xl mx-auto px-8">
-                <div className="grid grid-cols-5 grid-rows-2 gap-4 h-[80vh] grid-container">
+              <div className="2xl:max-w-[1380px] max-w-6xl mx-auto px-4 md:px-8">
+                {/* Desktop Grid (hidden on mobile) */}
+                <div className="hidden md:grid grid-cols-5 grid-rows-2 gap-4 h-[80vh] grid-container">
                   
                   {/* Top Left - Paragraph (wider - 3 columns) */}
                   <div className="col-span-3 flex items-center justify-center grid-cell" data-direction="left">
@@ -539,14 +664,14 @@ export default function Home() {
                   {/* Bottom Right - Stats and Artwork Grid (3 columns) */}
                   <div className="col-span-3 rounded-lg flex flex-col gap-3 min-h-[400px] grid-cell" data-direction="bottom">
                     {/* Top row - Stats and Artwork */}
-                    <div className="flex gap-3 h-[200px] flex-shrink-0">
+                    <div className="flex gap-3 h-[200px] shrink-0">
                       {/* LeetCode Stats */}
-                      <div className="w-[260px] flex-shrink-0">
+                      <div className="w-[260px] shrink-0">
                         <CompactLeetCodeStats />
                       </div>
                       
                       {/* GitHub Stats */}
-                      <div className="w-[260px] flex-shrink-0">
+                      <div className="w-[260px] shrink-0">
                         <GitHubStats />
                       </div>
                       
@@ -579,6 +704,103 @@ export default function Home() {
                     </div>
                   </div>
 
+                </div>
+
+                {/* Mobile Stacked Layout (visible only on mobile) */}
+                <div className="md:hidden w-full pb-8">
+                  <Carousel 
+                    className="w-full"
+                    opts={{
+                      align: "center",
+                      loop: false,
+                    }}
+                  >
+                    <CarouselContent className="-ml-4">
+                      
+                      {/* Slide 1 - Paragraph */}
+                      <CarouselItem className="pl-4">
+                        <div className="flex items-center justify-center p-4 min-h-[200px]">
+                          <p 
+                            className="text-lg sm:text-xl leading-relaxed text-center"
+                            style={{ fontFamily: 'EditorialNew, serif', color: '#FFFECB' }}
+                          >
+                            I'm passionate about creating digital experiences that bridge the gap between complex technology and human needs. My work spans full-stack development, AI integration, and real-time systems, always with a focus on building products that are both intelligent and intuitive.
+                          </p>
+                        </div>
+                      </CarouselItem>
+
+                      {/* Slide 2 - Digicam & Mixtape (Combined) */}
+                      <CarouselItem className="pl-4">
+                        <div className="flex flex-col items-center justify-center gap-3 min-h-[500px] p-2 py-4">
+                          {/* Digicam Component */}
+                          <div className="w-full max-w-[300px] h-[340px] shrink-0">
+                            <DigicamViewer 
+                              className="w-full h-full"
+                              style={{ background: 'transparent' }}
+                            />
+                          </div>
+
+                          {/* Mixtape Player */}
+                          <div className="w-full max-w-[300px] h-[280px] shrink-0">
+                            <MixtapePlayer />
+                          </div>
+                        </div>
+                      </CarouselItem>
+
+                      {/* Slide 3 - Stats and Artwork (Combined) */}
+                      <CarouselItem className="pl-4">
+                        <div className="flex flex-col items-center justify-center gap-0.5 min-h-[300px] p-2 py-0">
+                          {/* LeetCode Stats */}
+                          <div className="w-full max-w-[300px] h-[200px] shrink-0 scale-90">
+                            <CompactLeetCodeStats />
+                          </div>
+                          
+                          {/* GitHub Stats */}
+                          <div className="w-full max-w-[300px] h-[200px] shrink-0 scale-90">
+                            <GitHubStats />
+                          </div>
+                          
+                          {/* Artwork Display */}
+                          <div 
+                            className="w-full max-w-[320px] h-[200px] shrink-0 cursor-pointer transform scale-90"
+                            onClick={() => window.open('https://www.instagram.com/_.keebee._/', '_blank')}
+                          >
+                            <ArtworkDisplay />
+                          </div>
+                        </div>
+                      </CarouselItem>
+
+                      {/* Slide 4 - GitHub Calendar (Rotated) */}
+                      <CarouselItem className="pl-4">
+                        <div className="flex items-center justify-center min-h-[600px] p-4">
+                          <div className="transform rotate-90 origin-center">
+                            <div className="scale-[1]">
+                              <GitHubCalendar 
+                                username="KeEbEe123" 
+                                colorScheme="dark"
+                                theme={{
+                                  light: ['#161b22', '#0e4429', '#006d32', '#26a641', '#39d353'],
+                                  dark: ['#161b22', '#0e4429', '#006d32', '#26a641', '#39d353']
+                                }}
+                                style={{
+                                  color: '#FFFECB'
+                                }}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </CarouselItem>
+
+                    </CarouselContent>
+                    
+                    {/* Navigation Arrows */}
+                    <CarouselPrevious 
+                      className="left-2 bg-[#470024]/80 hover:bg-[#470024] border-[#FFFECB]/30 text-[#FFFECB]"
+                    />
+                    <CarouselNext 
+                      className="right-2 bg-[#470024]/80 hover:bg-[#470024] border-[#FFFECB]/30 text-[#FFFECB]"
+                    />
+                  </Carousel>
                 </div>
               </div>
               </div>

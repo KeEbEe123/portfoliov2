@@ -90,13 +90,21 @@ function DigicamModel({ onLoad, onNextClick, onPrevClick, currentTextureIndex }:
   currentTextureIndex: number;
 }) {
   const group = useRef<THREE.Group>(null);
-  const { raycaster, camera, gl } = useThree();
+  const { raycaster, camera, gl, size } = useThree();
   const nextButtonRef = useRef<THREE.Object3D | null>(null);
   const prevButtonRef = useRef<THREE.Object3D | null>(null);
   const pictureRef = useRef<THREE.Mesh | null>(null);
   const textureLoader = useRef(new THREE.TextureLoader());
   const textures = useRef<THREE.Texture[]>([]);
   const vhsMaterial = useRef<THREE.ShaderMaterial | null>(null);
+  
+  // Check if mobile
+  const isMobile = size.width < 400;
+  
+  // Adjust position based on screen size
+  const modelPosition: [number, number, number] = isMobile 
+    ? [-0, -1.5, -1]  // Mobile: shifted left and down
+    : [-1, -1, -0.5];      // Desktop: original position
   
   // Animation state for bending
   const bendAnimation = useRef({
@@ -364,7 +372,7 @@ function DigicamModel({ onLoad, onNextClick, onPrevClick, currentTextureIndex }:
   
   return (
     <group ref={group}>
-      <primitive object={scene} scale={0.1} position={[-1, -1, 0]} />
+      <primitive object={scene} scale={0.1} position={modelPosition} />
     </group>
   );
 }
@@ -377,6 +385,18 @@ interface DigicamViewerProps {
 export default function DigicamViewer({ className = "", style = {} }: DigicamViewerProps) {
   const [isLoaded, setIsLoaded] = useState(false);
   const [currentTextureIndex, setCurrentTextureIndex] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const handleNextClick = () => {
     setCurrentTextureIndex(prev => (prev + 1) % 7); // Cycle through 0-6
@@ -385,6 +405,11 @@ export default function DigicamViewer({ className = "", style = {} }: DigicamVie
   const handlePrevClick = () => {
     setCurrentTextureIndex(prev => (prev - 1 + 7) % 7); // Cycle backwards through 0-6
   };
+
+  // Adjust camera position for mobile
+  const cameraPosition: [number, number, number] = isMobile 
+    ? [-0.5, 0, 6]  // Mobile: shifted left
+    : [0, 0, 6];     // Desktop: centered
 
   return (
     <div className={`relative ${className}`} style={style}>
@@ -395,7 +420,7 @@ export default function DigicamViewer({ className = "", style = {} }: DigicamVie
           </div>
         </div>
       )}
-      <Canvas camera={{ position: [0, 0, 6], fov: 50 }} className="rounded-lg">
+      <Canvas camera={{ position: cameraPosition, fov: 50 }} className="rounded-lg">
         <ambientLight intensity={1.6} />
         <directionalLight position={[5, 5, 5]} intensity={1.9} />
         <directionalLight position={[-5, 5, 5]} intensity={1.8} />

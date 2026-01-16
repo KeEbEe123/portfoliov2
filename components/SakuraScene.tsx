@@ -9,7 +9,7 @@ import SakuraPetals from "@/components/SakuraPetals";
 
 function SakuraModel({ onLoad, onBranchAnimationUpdate }: { onLoad: () => void, onBranchAnimationUpdate?: (animations: any) => void }) {
   const group = useRef<THREE.Group>(null);
-  const { camera, pointer } = useThree();
+  const { camera, pointer, size } = useThree();
   const mousePos = useRef(new THREE.Vector2());
   const prevMousePos = useRef(new THREE.Vector2());
   const mouseVelocity = useRef(new THREE.Vector2());
@@ -39,6 +39,13 @@ function SakuraModel({ onLoad, onBranchAnimationUpdate }: { onLoad: () => void, 
   });
   
   const { actions, mixer } = useAnimations(animations, group);
+  
+  // Calculate responsive scale and position based on screen width
+  const isMobile = size.width < 768;
+  const isSmallMobile = size.width < 360;
+  const scale = isSmallMobile ? 0.6 : isMobile ? 0.8 : 1.5;
+  const positionY = isSmallMobile ? -2.5 : isMobile ? -2.8 : -3.3;
+  const positionX = isSmallMobile ? -0.5 : isMobile ? -0.8 : -1.2;
   
   useEffect(() => {
     // Find and store branch objects (removed animation playback)
@@ -205,7 +212,7 @@ function SakuraModel({ onLoad, onBranchAnimationUpdate }: { onLoad: () => void, 
   
   return (
     <group ref={group}>
-      <primitive object={scene} scale={1.5} position={[-1.2, -3.3, 0]} />
+      <primitive object={scene} scale={scale} position={[positionX, positionY, 0]} />
     </group>
   );
 }
@@ -218,6 +225,19 @@ export default function SakuraScene({ onLoaded }: SakuraSceneProps) {
   const [modelLoaded, setModelLoaded] = useState(false);
   const [branchAnimations, setBranchAnimations] = useState({});
   const [sceneCamera, setSceneCamera] = useState<THREE.Camera | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    // Check if mobile on mount and window resize
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   useEffect(() => {
     console.log('SakuraScene mounted');
@@ -278,7 +298,10 @@ export default function SakuraScene({ onLoaded }: SakuraSceneProps) {
           {/* Interactive 3D Sakura tree */}
           <div className="relative z-10 w-full h-full">
             <Canvas 
-              camera={{ position: [0, -2, 6], fov: 50 }} 
+              camera={{ 
+                position: isMobile ? [0, -1, 5] : [0, -2, 6], 
+                fov: isMobile ? 60 : 50 
+              }} 
               style={{ background: 'transparent' }}
             >
               <CameraCapture />

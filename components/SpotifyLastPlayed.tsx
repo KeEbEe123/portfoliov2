@@ -174,7 +174,7 @@ export default function SpotifyLastPlayed() {
           )}
         </div>
 
-        <div className="text-xs 2xl:text-sm font-figtree leading-7 truncate text-[#FAE3AC] drop-shadow-[0_1px_1px_rgba(0,0,0,0.7)]">
+        <div className="text-xs 2xl:text-sm font-figtree leading-7 text-[#FAE3AC] drop-shadow-[0_1px_1px_rgba(0,0,0,0.7)] max-w-[140px] 2xl:max-w-[200px] truncate">
           {loading ? "" : data?.artistName || ""}
         </div>
       </div>

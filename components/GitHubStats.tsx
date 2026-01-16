@@ -158,7 +158,7 @@ export default function GitHubStats() {
               <CountUp
                 from={0}
                 to={data.totalContributions}
-                duration={2}
+                duration={1}
                 separator=","
                 onStart={() => {}}
                 onEnd={() => {}}

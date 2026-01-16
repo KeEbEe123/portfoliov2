@@ -161,7 +161,7 @@ export default function CompactLeetCodeStats() {
         </p>
         <div className="flex items-baseline">
           <span className="font-bold text-[48px] text-[#fffecb] -mt-4" style={{ fontFamily: 'DM Sans, sans-serif' }} >
-            <CountUp from={0} to={data.totalSolved} direction="up" duration={2} separator="," className="count-up-text" onStart={() => {}} onEnd={() => {}}/>
+            <CountUp from={0} to={data.totalSolved} direction="up" duration={1} separator="," className="count-up-text" onStart={() => {}} onEnd={() => {}}/>
           </span>
           <span className="font-bold text-[16px] text-[#fffecb]" style={{ fontFamily: 'DM Sans, sans-serif' }}>
             /{data.totalQuestions}
